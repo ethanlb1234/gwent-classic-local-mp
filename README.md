@@ -18,12 +18,13 @@ A browser remake of the original Gwent minigame from The Witcher 3: Wild Hunt in
 
 To create distributable desktop apps:
 
-- **macOS**: `npm run build:mac`
-- **Windows**: `npm run build:win`
+- **macOS**: `npm run build:mac` (requires macOS)
+- **Windows**: `npm run build:win` (requires Windows or Wine on Linux)
 - **Linux**: `npm run build:linux`
-- **All platforms**: `npm run build`
 
 Built apps will be in the `dist/` folder.
+
+**Note**: Cross-platform builds typically require the target OS. For easy distribution, check the **Releases** section for pre-built installers.
 
 ## Rules
 The game is played in the same way as the original. The player aims to win two of three rounds, where victory within a given round is determined by whoever scores the most points. 

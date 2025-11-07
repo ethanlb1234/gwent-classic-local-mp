@@ -16,8 +16,7 @@ function createWindow() {
       enableRemoteModule: false
     },
     title: 'Gwent Classic - Local Multiplayer',
-    backgroundColor: '#000000',
-    icon: path.join(__dirname, 'img/icons/deck_shield_monsters.png')
+    backgroundColor: '#000000'
   });
 
   // Load the index.html file

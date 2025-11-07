@@ -34,12 +34,10 @@
       "output": "dist"
     },
     "mac": {
-      "category": "public.app-category.games",
-      "icon": "img/icons/deck_shield_monsters.png"
+      "category": "public.app-category.games"
     },
     "win": {
-      "target": "nsis",
-      "icon": "img/icons/deck_shield_monsters.png"
+      "target": "nsis"
     },
     "linux": {
       "target": "AppImage",
