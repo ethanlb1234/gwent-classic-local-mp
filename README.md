@@ -16,15 +16,26 @@ A browser remake of the original Gwent minigame from The Witcher 3: Wild Hunt in
 
 ## Building Desktop Apps
 
-To create distributable desktop apps:
+### Automated Builds (GitHub Actions)
+
+The easiest way to create installers for all platforms:
+
+1. Push your changes to GitHub
+2. Create a new release tag: `git tag v1.0.0 && git push --tags`
+3. GitHub Actions automatically builds .dmg (Mac), .exe (Windows), and .AppImage (Linux)
+4. Download installers from the Releases page
+
+You can also manually trigger builds from the Actions tab on GitHub.
+
+### Manual Local Builds
+
+To build locally on your machine:
 
 - **macOS**: `npm run build:mac` (requires macOS)
 - **Windows**: `npm run build:win` (requires Windows or Wine on Linux)
 - **Linux**: `npm run build:linux`
 
 Built apps will be in the `dist/` folder.
-
-**Note**: Cross-platform builds typically require the target OS. For easy distribution, check the **Releases** section for pre-built installers.
 
 ## Rules
 The game is played in the same way as the original. The player aims to win two of three rounds, where victory within a given round is determined by whoever scores the most points. 
