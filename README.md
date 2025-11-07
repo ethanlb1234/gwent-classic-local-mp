@@ -1,7 +1,41 @@
 # gwent-classic
 ![cover](https://user-images.githubusercontent.com/26311830/116256903-f1599b00-a7b6-11eb-84a1-16dcb5c9bfc6.jpg)
 
-A browser remake of the original Gwent minigame from The Witcher 3: Wild Hunt including all cards from the DLC. To play, download the repo and open index.html in a browser. For the best experience, play in fullscreen which can be toggled in most browsers with F11.
+A browser remake of the original Gwent minigame from The Witcher 3: Wild Hunt including all cards from the DLC. Now with **local hot-seat multiplayer** - play against a friend on the same device!
+
+## How to Play
+
+### Desktop App (Recommended for Multiplayer)
+1. Download the repo
+2. Install dependencies: `npm install`
+3. Run the app: `npm start`
+
+### Browser
+1. Download the repo and open `index.html` in a browser
+2. For the best experience, play in fullscreen (F11 in most browsers)
+
+## Building Desktop Apps
+
+### Automated Builds (GitHub Actions)
+
+The easiest way to create installers for all platforms:
+
+1. Push your changes to GitHub
+2. Create a new release tag: `git tag v1.0.0 && git push --tags`
+3. GitHub Actions automatically builds .dmg (Mac), .exe (Windows), and .AppImage (Linux)
+4. Download installers from the Releases page
+
+You can also manually trigger builds from the Actions tab on GitHub.
+
+### Manual Local Builds
+
+To build locally on your machine:
+
+- **macOS**: `npm run build:mac` (requires macOS)
+- **Windows**: `npm run build:win` (requires Windows or Wine on Linux)
+- **Linux**: `npm run build:linux`
+
+Built apps will be in the `dist/` folder.
 
 ## Rules
 The game is played in the same way as the original. The player aims to win two of three rounds, where victory within a given round is determined by whoever scores the most points. 
@@ -22,8 +56,8 @@ All cards from the base games and DLC can be used by you and the AI. This includ
 #### Faithful to the original minigame
 This remake aims to resemble the orignal minigame as closely as possible from the font to the UI layout and notifications. Some changes have been made in the form of buttons to toggle the music and pass your current turn. The deck customization screen also includes buttons to upload and download decks.
 
-#### AI opponent
-When you start a game you will face off againsts a fully implemented AI oponent. The opponent uses premade decks and will make intelligent decisions based on the cards in its hand, on the table, and in the discard piles.
+#### Local Hot-Seat Multiplayer
+Play against a friend on the same device! A privacy screen appears between turns so players can't see each other's cards. When it's your turn, click "Ready" to see the board and your hand. Perfect for face-to-face gameplay.
 
 #### Customize, save and upload decks
 You can select a faction to play as at the top of the screen and then add and remove cards from your deck by clicking on the cards in either scroll-down menu. You can also pick a leader card by selecting the current leader and scrolling through the options for that faction. At the top of the screen there are buttons to upload and download decks to play with. These are stored in json format and are checked to see if they comply with their assigned faction and maximum card counts.
