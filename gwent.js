@@ -431,9 +431,12 @@ class Player {
 	constructor(id, name, deck) {
 		this.id = id;
 		this.tag = (id === 0) ? "me" : "op";
-		this.controller = (id === 0) ? new Controller() : new ControllerAI(this);
-		
-		this.hand = (id === 0) ? new Hand(document.getElementById("hand-row")) : new HandAI();
+		// Both players are now human controllers for local multiplayer
+		this.controller = new Controller();
+
+		// Both players use real Hand objects for local multiplayer
+		// They'll share the display but we'll swap which one is visible
+		this.hand = new Hand(document.getElementById("hand-row"), "hand-count-" + this.tag);
 		this.grave =  new Grave( document.getElementById("grave-" + this.tag));
 		this.deck = new Deck(deck.faction, document.getElementById("deck-" + this.tag));
 		this.deck_data = deck;
@@ -503,14 +506,8 @@ class Player {
 		document.getElementById("stats-" + this.tag).classList.add("current-turn");
 		if (this.leaderAvailable)
 			this.elem_leader.children[1].classList.remove("hide");
-		
-		if (this === player_me) {
-			document.getElementById("pass-button").classList.remove("noclick");
-		}
-		
-		if (this.controller instanceof ControllerAI) {
-			await this.controller.startTurn(this);
-		}
+
+		document.getElementById("pass-button").classList.remove("noclick");
 	}
 	
 	// Passes the round and ends the turn
@@ -896,9 +893,9 @@ class HandAI extends CardContainer {
 
 // Hand used by current player
 class Hand extends CardContainer {
-	constructor(elem){
+	constructor(elem, counterId){
 		super(elem);
-		this.counter = document.getElementById("hand-count-me");
+		this.counter = document.getElementById(counterId || "hand-count-me");
 	}
 	
 	// Override
@@ -912,6 +909,19 @@ class Hand extends CardContainer {
 	resize() {
 		this.counter.innerHTML = this.cards.length;
 		this.resizeCardContainer(11, 0.075, .00225);
+	}
+
+	// Refresh the display to show current player's cards
+	refreshDisplay() {
+		// Clear the display
+		while (this.elem.firstChild) {
+			this.elem.removeChild(this.elem.firstChild);
+		}
+		// Re-add all cards
+		this.cards.forEach((card, i) => {
+			this.addCardElement(card, i);
+		});
+		this.resize();
 	}
 }
 
@@ -1337,9 +1347,16 @@ class Game {
 	
 	// Allows the player to swap out up to two cards from their iniitial hand
 	async initialRedraw(){
-		for (let i=0; i< 2; i++)
-			player_op.controller.redraw();
+		// Player 1 redraw
+		await ui.showPlayerSwitchScreen(player_me.name);
+		player_me.hand.refreshDisplay();
 		await ui.queueCarousel(player_me.hand, 2, async (c, i) => await player_me.deck.swap(c, c.removeCard(i)), c => true, true, true, "Choose up to 2 cards to redraw.");
+
+		// Player 2 redraw
+		await ui.showPlayerSwitchScreen(player_op.name);
+		player_op.hand.refreshDisplay();
+		await ui.queueCarousel(player_op.hand, 2, async (c, i) => await player_op.deck.swap(c, c.removeCard(i)), c => true, true, true, "Choose up to 2 cards to redraw.");
+
 		ui.enablePlayer(false);
 		game.startRound();
 	}
@@ -1375,7 +1392,14 @@ class Game {
 			this.currPlayer = this.currPlayer.opponent();
 			await ui.notification(this.currPlayer.tag + "-turn", 1200);
 		}
-		ui.enablePlayer(this.currPlayer === player_me);
+
+		// Show privacy screen for player switching in local multiplayer
+		await ui.showPlayerSwitchScreen(this.currPlayer.name);
+
+		// After ready button clicked, refresh the hand display for current player
+		this.currPlayer.hand.refreshDisplay();
+
+		ui.enablePlayer(true);  // Both players can interact on their turn
 		this.currPlayer.startTurn();
 	}
 	
@@ -1701,7 +1725,27 @@ class UI {
 		let main = document.getElementsByTagName("main")[0].classList;
 		if (enable) main.remove("noclick"); else main.add("noclick");
 	}
-	
+
+	// Shows the player switch screen and waits for ready button click
+	async showPlayerSwitchScreen(playerName) {
+		return new Promise((resolve) => {
+			const switchScreen = document.getElementById("player-switch-screen");
+			const playerNameElem = switchScreen.querySelector(".switch-player-name");
+			const readyButton = document.getElementById("ready-button");
+
+			playerNameElem.textContent = playerName + "'s Turn";
+			switchScreen.classList.remove("hide");
+
+			const handleReady = () => {
+				readyButton.removeEventListener("click", handleReady);
+				switchScreen.classList.add("hide");
+				resolve();
+			};
+
+			readyButton.addEventListener("click", handleReady);
+		});
+	}
+
 	// Initializes the youtube background music object
 	initYouTube(){
 		this.youtube = new YT.Player('youtube', {
