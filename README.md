@@ -1,4 +1,4 @@
-# gwent-classic
+# gwent-classic-local-mp
 ![cover](https://user-images.githubusercontent.com/26311830/116256903-f1599b00-a7b6-11eb-84a1-16dcb5c9bfc6.jpg)
 
 A browser remake of the original Gwent minigame from The Witcher 3: Wild Hunt including all cards from the DLC. Now with **local hot-seat multiplayer** - play against a friend on the same device!
